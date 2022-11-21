@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item
+        android:id="@+id/map"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        android:title="Carte" />
+    <item
+        android:id="@+id/add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Ajouter" />
+    <item
+        android:id="@+id/filter"
+        android:icon="@drawable/filter"
+        android:title="Filtrer" />
+    <item
+        android:id="@+id/share"
+        android:icon="?attr/actionModeShareDrawable"
+        android:title="Partager" />
+    <item
+        android:id="@+id/account"
+        android:icon="@drawable/user"
+        android:title="Compte" />
+</menu>
