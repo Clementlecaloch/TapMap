@@ -34,7 +34,6 @@ import com.mapbox.maps.viewannotation.ViewAnnotationManager;
 public class MapFragment extends Fragment {
 
     MapView mapView = null;
-    ViewAnnotationManager vam;
 
     public MapFragment() {
         // Required empty public constructor
