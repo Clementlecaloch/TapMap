@@ -1,5 +1,7 @@
 package com.example.tapmap;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +19,8 @@ import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
 
 import com.mapbox.maps.MapView;
@@ -51,26 +55,21 @@ public class MapFragment extends Fragment {
         mapView = view.findViewById(R.id.mapView);
         mapView.getMapboxMap().loadStyleUri(Style.SATELLITE_STREETS);
 
-
-        createCircleAnnotation(mapView, Point.fromLngLat(0,0));
+        createPointAnnotation(mapView, Point.fromLngLat(0,0));
     }
 
-    public void createCircleAnnotation(MapView mapView, Point point) {
+    public void createPointAnnotation(MapView mapView, Point point) {
 
         AnnotationPlugin annotationApi = AnnotationPluginImplKt.getAnnotations(mapView);
-        CircleAnnotationManager circleAnnotationManager = CircleAnnotationManagerKt.createCircleAnnotationManager(annotationApi, new AnnotationConfig());
+        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationApi, new AnnotationConfig());
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.red_marker);
 
         // circle annotations options
-        CircleAnnotationOptions circleAnnotationOptions = new CircleAnnotationOptions()
+        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                 .withPoint(point)
-                .withCircleRadius(8.0)
-                .withCircleColor("#ee4e8b")
-                .withCircleBlur(0.5)
-                .withCircleStrokeWidth(2.0)
-                .withCircleStrokeColor("#ffffff");
+                .withIconImage(bm);
 
-        circleAnnotationManager.create(circleAnnotationOptions);
+        pointAnnotationManager.create(pointAnnotationOptions);
     }
-
-
 }
