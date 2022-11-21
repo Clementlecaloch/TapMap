@@ -3,9 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/lucas/Desktop/Cours/I2/Web/TapMap/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/lucas/Desktop/Cours/I2/Web/TapMap/app/src/main/res/layout/annotation.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable/add_icon_background.xml" value="0.1645" />
+        <entry key="app/src/main/res/drawable/filter.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic__06230_add_icon.xml" value="0.1905" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29583333333333334" />
+        <entry key="app/src/main/res/layout/fragment_account.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/fragment_add.xml" value="0.2942708333333333" />
+        <entry key="app/src/main/res/layout/fragment_filter.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.2942708333333333" />
+        <entry key="app/src/main/res/layout/fragment_share.xml" value="0.15520833333333334" />
+        <entry key="app/src/main/res/menu/bottom_nav_manu.xml" value="0.30885416666666665" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
       </map>
     </option>
   </component>
