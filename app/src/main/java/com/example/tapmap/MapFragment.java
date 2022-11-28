@@ -63,7 +63,7 @@ public class MapFragment extends Fragment {
             Log.e("yeyey","hsbsh");
             for(Pin p : v.points){
                 Log.e("yeyey","opfniic");
-                createPointAnnotation(mapView, );
+                createPointAnnotation(mapView, p);
             }
         }
     }
