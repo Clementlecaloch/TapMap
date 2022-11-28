@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +20,11 @@ import com.mapbox.maps.MapView;
 import com.mapbox.maps.plugin.annotation.AnnotationConfig;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
-import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationManager;
-import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationManagerKt;
-import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
-import com.mapbox.maps.viewannotation.ViewAnnotationManager;
 
-import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
-import com.mapbox.maps.viewannotation.ViewAnnotationManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,9 +51,11 @@ public class MapFragment extends Fragment {
         mapView = view.findViewById(R.id.mapView);
         mapView.getMapboxMap().loadStyleUri(Style.SATELLITE_STREETS);
 
-        for(Voyage v : voyages){
-            for(Pin p : v.points){
-                createPointAnnotation(mapView, p);
+        for(Voyage v : voyages) {
+            if (v.filtered) {
+                for (Pin p : v.points) {
+                    createPointAnnotation(mapView, p);
+                }
             }
         }
     }

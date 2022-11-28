@@ -24,6 +24,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
