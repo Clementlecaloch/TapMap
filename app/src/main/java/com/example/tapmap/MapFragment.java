@@ -1,15 +1,21 @@
 package com.example.tapmap;
 
+import static com.example.tapmap.MainActivity.voyages;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.plugin.annotation.AnnotationConfig;
@@ -43,32 +49,42 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e("yeyey","kdnjndjndjd");
         mapView = view.findViewById(R.id.mapView);
         mapView.getMapboxMap().loadStyleUri(Style.SATELLITE_STREETS);
 
-        createPointAnnotation(mapView, Point.fromLngLat(0,0));
+        for(Voyage v : voyages){
+            Log.e("yeyey","hsbsh");
+            for(Pin p : v.points){
+                Log.e("yeyey","opfniic");
+                createPointAnnotation(mapView, );
+            }
+        }
     }
 
-    public void createPointAnnotation(MapView mapView, Point point) {
-
+    public void createPointAnnotation(MapView mapView, Pin pin) {
         AnnotationPlugin annotationApi = AnnotationPluginImplKt.getAnnotations(mapView);
         PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationApi, new AnnotationConfig());
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.red_marker);
 
-        // circle annotations options
+        //conversion de l'objet pin en json element
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd' 'HH:mm:ss").create();
+        JsonElement jsonPin = gson.toJsonTree(pin);
+
+        //paramétrage de l'annotation
         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
-                .withPoint(point)
+                .withPoint(Point.fromLngLat(pin.longitude, pin.latitude))
+                .withData(jsonPin)
                 .withIconImage(bm);
 
+        //ajout de l'annotation à la carte
         pointAnnotationManager.create(pointAnnotationOptions);
     }
 }

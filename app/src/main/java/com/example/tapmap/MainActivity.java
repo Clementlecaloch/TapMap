@@ -1,14 +1,17 @@
 package com.example.tapmap;
 
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -17,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     ShareFragment shareFragment = new ShareFragment();
     AccountFragment accountFragment = new AccountFragment();
     MapFragment mapFragment = new MapFragment();
+
+    static ArrayList<Voyage> voyages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.map);
+
+        // Initialize the SDK
+        Places.initialize(getApplicationContext(), "AIzaSyBTUYBn93OPTOWEgA935T5vyOwHIPyh3Fw");
+
+        // Create a new PlacesClient instance
+        PlacesClient placesClient = Places.createClient(this);
+
+        voyages.add(new Voyage("Voyage sympa", false));
+        voyages.get(0).points.add(new Pin("bshbs",0,0,"hshs","hsbh"));
     }
 
     @SuppressLint("LongLogTag")
