@@ -55,14 +55,11 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.e("yeyey","kdnjndjndjd");
         mapView = view.findViewById(R.id.mapView);
         mapView.getMapboxMap().loadStyleUri(Style.SATELLITE_STREETS);
 
         for(Voyage v : voyages){
-            Log.e("yeyey","hsbsh");
             for(Pin p : v.points){
-                Log.e("yeyey","opfniic");
                 createPointAnnotation(mapView, p);
             }
         }
