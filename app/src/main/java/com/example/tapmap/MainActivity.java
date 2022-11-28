@@ -31,7 +31,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.map);
+        if (bottomNavigationView.getSelectedItemId() == 0) {
+            bottomNavigationView.setSelectedItemId(R.id.map);
+        }
 
         // Initialize the SDK
         Places.initialize(getApplicationContext(), "AIzaSyBTUYBn93OPTOWEgA935T5vyOwHIPyh3Fw");
