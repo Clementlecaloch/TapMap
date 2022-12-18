@@ -2,20 +2,18 @@ package com.example.tapmap;
 
 import com.example.tapmap.Pin;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Voyage {
+public class Voyage implements Serializable {
 
     String nom;
     ArrayList<Pin> points = new ArrayList<>();
 
     boolean filtered = true;
 
-    boolean fini;
-
-    public Voyage(String nom, boolean fini) {
+    public Voyage(String nom) {
         this.nom = nom;
-        this.fini = fini;
     }
 
     public boolean isFiltered() {

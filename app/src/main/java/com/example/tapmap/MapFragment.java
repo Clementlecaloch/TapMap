@@ -2,49 +2,52 @@ package com.example.tapmap;
 
 import static com.example.tapmap.MainActivity.voyages;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.MapView;
-import com.mapbox.maps.RenderedQueryGeometry;
-import com.mapbox.maps.RenderedQueryOptions;
 import com.mapbox.maps.ViewAnnotationAnchor;
 import com.mapbox.maps.ViewAnnotationOptions;
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor;
-import com.mapbox.maps.plugin.annotation.Annotation;
 import com.mapbox.maps.plugin.annotation.AnnotationConfig;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
-import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotation;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 
 import com.mapbox.maps.Style;
-import com.mapbox.maps.plugin.gestures.OnMapClickListener;
 import com.mapbox.maps.viewannotation.ViewAnnotationManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,7 +72,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mapView = view.findViewById(R.id.mapView);
-        mapView.getMapboxMap().loadStyleUri(Style.SATELLITE_STREETS);
+        mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
 
         annotationApi = AnnotationPluginImplKt.getAnnotations(mapView);
         pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationApi, new AnnotationConfig());
@@ -84,6 +87,7 @@ public class MapFragment extends Fragment {
             return false;
         });
 
+
         for(Voyage v : voyages) {
             if (v.filtered) {
                 for (Pin p : v.points) {
@@ -95,7 +99,7 @@ public class MapFragment extends Fragment {
     }
 
     public void createPointAnnotation(MapView mapView, Pin pin) {
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.red_marker);
+        Bitmap bm = getBitmap(R.drawable.ic_baseline_location_on_24);
 
         //conversion de l'objet pin en json element
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd' 'HH:mm:ss").create();
@@ -122,10 +126,8 @@ public class MapFragment extends Fragment {
                         .build()
                 );
         TextView nom = va.findViewById(R.id.viewAnnotationNom);
-        TextView description = va.findViewById(R.id.viewAnnotationDescription);
 
         nom.setText(pin.nom);
-        description.setText(pin.description);
         va.setOnClickListener(view -> showAlertDialogPin(pin));
         va.setVisibility(View.GONE);
     }
@@ -134,7 +136,6 @@ public class MapFragment extends Fragment {
     {
         // Create an alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Pin");
 
         // set the custom layout
         final View customLayout = getLayoutInflater().inflate(R.layout.dialog_pin, null);
@@ -143,16 +144,46 @@ public class MapFragment extends Fragment {
         TextView lieu = customLayout.findViewById(R.id.dialogPinLieu);
         TextView description = customLayout.findViewById(R.id.dialogPinDescription);
         TextView voyage = customLayout.findViewById(R.id.dialogPinVoyage);
-        Button btnDelete = customLayout.findViewById(R.id.dialogPinDelete);
+        ImageButton btnDelete = customLayout.findViewById(R.id.dialogPinbtnDelete);
+        ImageView photo = customLayout.findViewById(R.id.dialogPinPhoto);
 
         lieu.setText(p.nom);
         description.setText(p.description);
         voyage.setText(p.voyage);
+        if(p.isPhotoSet())
+            photo.setImageBitmap(loadImage(p));
 
         builder.setNegativeButton("Fermer", (dialogInterface, i) -> dialogInterface.cancel());
 
         // create and show the alert dialog
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+    public Bitmap loadImage(Pin p)
+    {
+        try {
+            ContextWrapper cw = new ContextWrapper(getContext());
+            File directory = cw.getDir("photos", Context.MODE_PRIVATE);
+            File f = new File(directory, p.photo);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

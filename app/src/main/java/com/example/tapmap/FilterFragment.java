@@ -48,10 +48,5 @@ public class FilterFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         adapter = new FilterAdapter(voyages);
         recyclerView.setAdapter(adapter);
-
-        Button btnAppliquer = view.findViewById(R.id.btnFilterAppliquer);
-        btnAppliquer.setOnClickListener(v -> {
-
-        });
     }
 }

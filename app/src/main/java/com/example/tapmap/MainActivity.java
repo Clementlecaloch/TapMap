@@ -1,7 +1,10 @@
 package com.example.tapmap;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -23,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     MapFragment mapFragment = new MapFragment();
     static BottomNavigationView bottomNavigationView;
 
+    static String SHARED_PREFERENCES_FILE = "SharedPrefs";
+    static String SHARED_PREFERENCES_VOYAGES = "voyages";
+
     static ArrayList<Voyage> voyages = new ArrayList<>();
 
     @Override
@@ -32,6 +39,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+
+        //on récupère les voyages dans les shared preferences
+        SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES_FILE,Context.MODE_PRIVATE);
+        try {
+            Log.e("test",prefs.getString(SHARED_PREFERENCES_VOYAGES,"aie"));
+            voyages = (ArrayList<Voyage>) ObjectSerializer.deserialize(prefs.getString(SHARED_PREFERENCES_VOYAGES, ObjectSerializer.serialize(new ArrayList<Voyage>())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //on met la map comme fragment par défaut
         getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, mapFragment).commit();

@@ -1,32 +1,51 @@
 package com.example.tapmap;
 
+import static com.example.tapmap.MainActivity.SHARED_PREFERENCES_FILE;
+import static com.example.tapmap.MainActivity.SHARED_PREFERENCES_VOYAGES;
 import static com.example.tapmap.MainActivity.bottomNavigationView;
 import static com.example.tapmap.MainActivity.voyages;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.util.Hex;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -84,23 +103,65 @@ public class AddFragment extends Fragment {
 
         //Création de voyage
         Button btnCreerVoyage = view.findViewById(R.id.btnCreerVoyage);
-        btnCreerVoyage.setOnClickListener(view1 -> showAlertDialogButtonClicked());
+        btnCreerVoyage.setOnClickListener(view1 -> dialogNewVoyage());
 
         //Sauvegarde du pin
         editDescription = view.findViewById(R.id.editTextDescriptionPin);
+
+        //Choix d'une photo
+        ImageView photo = view.findViewById(R.id.addPinImageView);
+        TextView textNoImg = view.findViewById(R.id.addPinTextNoImage);
+
+        ActivityResultLauncher<Intent> launcherGetImage = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData(); //on récupère les données qu'on a été chercher
+                        try {
+                            //on met notre image dans la vue de l'activité
+                            InputStream inputStream = getContext().getContentResolver().openInputStream(data.getData());
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            photo.setImageBitmap(bitmap);
+                            textNoImg.setVisibility(View.GONE);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        //Bouton pick image
+        ImageButton btnPickImage = view.findViewById(R.id.addPinPickImage);
+        btnPickImage.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);  //on lance une activité qui va aller chercher une donnée
+            intent.setType("image/*");  //on précise qu'on veut une image
+            launcherGetImage.launch(intent);
+        });
 
         //bouton d'ajout
         btnAjouterPin=view.findViewById(R.id.btnAjouterPin);
         btnAjouterPin.setOnClickListener(v -> {
             if(selectedPlace != null) {
                 if(spinnerVoyage.getSelectedItem() != null) {
-                    Voyage selectedVoyage = new Voyage("Nouveau", false);
+                    Voyage selectedVoyage = new Voyage("Nouveau");
                     for (Voyage voy : voyages) {
                         if (voy.nom.equals(spinnerVoyage.getSelectedItem().toString()))
                             selectedVoyage = voy;
                     }
-                    selectedVoyage.points.add(new Pin(selectedPlace, editDescription.getText().toString(), selectedVoyage.nom));
+                    String nomImage = "image" + Math.random()*100000;
+                    saveImage(((BitmapDrawable) photo.getDrawable()).getBitmap(),nomImage);
+                    selectedVoyage.points.add(new Pin(selectedPlace, editDescription.getText().toString(), selectedVoyage.nom, nomImage));
                     Toast.makeText(getContext(), "Point créé !",Toast.LENGTH_SHORT).show();
+
+                    // save the task list to preference
+                    SharedPreferences prefs = getActivity().getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    try {
+                        Log.e("test",ObjectSerializer.serialize(voyages));
+                        editor.putString(SHARED_PREFERENCES_VOYAGES, ObjectSerializer.serialize(voyages));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    editor.apply();
 
                     //on retourne sur la map
                     bottomNavigationView.setSelectedItemId(R.id.map);
@@ -115,7 +176,9 @@ public class AddFragment extends Fragment {
         });
     }
 
-    public void showAlertDialogButtonClicked()
+
+
+    public void dialogNewVoyage()
     {
 
         // Create an alert builder
@@ -140,7 +203,7 @@ public class AddFragment extends Fragment {
                     }
                 }
                 if(valid) {
-                    voyages.add(new Voyage(editText.getText().toString(), false));
+                    voyages.add(new Voyage(editText.getText().toString()));
                     adapter.add(editText.getText().toString());
                     adapter.notifyDataSetChanged();
                 }
@@ -160,5 +223,29 @@ public class AddFragment extends Fragment {
             voy.add(v.nom);
         }
         return voy;
+    }
+
+    private void saveImage(Bitmap bitmapImage, String nom){
+        //on trouve le chemin du répertoire privé de l'appli
+        ContextWrapper cw = new ContextWrapper(getContext());
+        File directory = cw.getDir("photos", Context.MODE_PRIVATE);
+
+        //on crée notre chemin en ajoutant le nom
+        File mypath=new File(directory,nom);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // On compresse l'image en png
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(fos!=null) fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
