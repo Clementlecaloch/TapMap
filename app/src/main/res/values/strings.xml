@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TapMap</string>
     <string name="mapbox_access_token">pk.eyJ1IjoibHVsdXRvcnVzIiwiYSI6ImNsYWlzenh1djAza20zd3VjNDA5Y3dmcDAifQ.NrH8RUPYiTyR4Yj-h27X6A</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dialog_creer">Créer</string>
+    <string name="dialog_annuler">Annuler</string>
 </resources>

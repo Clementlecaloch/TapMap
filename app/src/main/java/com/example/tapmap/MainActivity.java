@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     ShareFragment shareFragment = new ShareFragment();
     AccountFragment accountFragment = new AccountFragment();
     MapFragment mapFragment = new MapFragment();
+    static BottomNavigationView bottomNavigationView;
 
     static ArrayList<Voyage> voyages = new ArrayList<>();
 
@@ -28,27 +30,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        if (bottomNavigationView.getSelectedItemId() == 0) {
-            bottomNavigationView.setSelectedItemId(R.id.map);
-        }
 
-        // Initialize the SDK
+        //on met la map comme fragment par défaut
+        getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, mapFragment).commit();
+
+        // Initialise le Google Places SDK
         Places.initialize(getApplicationContext(), "AIzaSyBTUYBn93OPTOWEgA935T5vyOwHIPyh3Fw");
-
-        // Create a new PlacesClient instance
-        PlacesClient placesClient = Places.createClient(this);
-
-        voyages.add(new Voyage("Voyage sympa", false));
-        voyages.get(0).points.add(new Pin("bshbs",0,0,"hshs","hsbh"));
     }
 
     @SuppressLint("LongLogTag")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.map:
                 getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, mapFragment).commit();
