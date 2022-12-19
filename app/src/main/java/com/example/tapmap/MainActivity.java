@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //on récupère les voyages dans les shared preferences
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES_FILE,Context.MODE_PRIVATE);
         try {
-            Log.e("test",prefs.getString(SHARED_PREFERENCES_VOYAGES,"aie"));
             voyages = (ArrayList<Voyage>) ObjectSerializer.deserialize(prefs.getString(SHARED_PREFERENCES_VOYAGES, ObjectSerializer.serialize(new ArrayList<Voyage>())));
         } catch (IOException e) {
             e.printStackTrace();

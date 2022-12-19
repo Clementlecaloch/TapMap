@@ -50,6 +50,26 @@
         app:layout_constraintStart_toStartOf="@+id/textView11"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
+    <EditText
+        android:id="@+id/dialogPinEditDescription"
+        android:layout_width="280dp"
+        android:layout_height="48dp"
+        android:background="@drawable/input"
+        android:ems="10"
+        android:hint="Description"
+        android:inputType="textPersonName"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:elevation="8dp"
+        android:padding="4dp"
+        android:shadowColor="#FFFFFF"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="0"
+        app:layout_constraintBottom_toTopOf="@+id/textView18"
+        app:layout_constraintStart_toStartOf="@+id/textView16"
+        app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
     <TextView
         android:id="@+id/textView18"
         android:layout_width="wrap_content"
@@ -85,21 +105,42 @@
         app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
     <ImageButton
-        android:id="@+id/dialogPinbtnDelete"
+        android:id="@+id/dialogPinbtnEdit"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:backgroundTint="#FF0000"
+        android:backgroundTint="@color/darkGreen"
         android:contentDescription="Bouton de suppression"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:scaleType="fitCenter"
-        android:scaleX="1.4"
-        android:scaleY="1.4"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:src="@drawable/icon_edit"
+        app:icon="@drawable/icon_edit"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="#FFFFFF"
-        tools:src="@drawable/ic_outline_delete_24"
-        tools:srcCompat="@drawable/ic_outline_delete_24" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/dialogPinBtnBrowse"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:backgroundTint="@color/darkGreen"
+        android:contentDescription="Bouton de suppression"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:scaleType="center"
+        android:visibility="gone"
+        app:icon="@drawable/icon_browse_image"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView20"
+        app:layout_constraintStart_toEndOf="@+id/textView20"
+        app:layout_constraintTop_toTopOf="@+id/textView20" />
 
     <ImageView
         android:id="@+id/dialogPinPhoto"
@@ -110,5 +151,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView20"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/dialogPinNoPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aucune photo ajoutée"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

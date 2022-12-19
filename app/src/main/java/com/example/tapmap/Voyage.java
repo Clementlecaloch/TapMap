@@ -9,11 +9,13 @@ public class Voyage implements Serializable {
 
     String nom;
     ArrayList<Pin> points = new ArrayList<>();
+    int color;
 
     boolean filtered = true;
 
-    public Voyage(String nom) {
+    public Voyage(String nom, int color) {
         this.nom = nom;
+        this.color = color;
     }
 
     public boolean isFiltered() {
@@ -26,6 +28,10 @@ public class Voyage implements Serializable {
 
     public String getNom() {
         return nom;
+    }
+
+    public int getColor() {
+        return color;
     }
 
 }
